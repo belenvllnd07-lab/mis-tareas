@@ -214,6 +214,15 @@
       </div>
     </div>
     <button class="btn-primary" onclick="downloadTemplate()">⬇ Bajar plantilla de ejemplo</button>
+
+  <div style="margin-top:20px">
+    <div class="section-title">🔑 Token para bot de Telegram</div>
+    <div style="background:var(--surface);border-radius:14px;padding:16px;margin-bottom:10px">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Copiá este token y pegalo en Railway como variable <b>GOOGLE_TOKEN</b> para sincronizar el bot con Google Sheets.</p>
+      <button class="btn-primary" style="margin-top:0" onclick="copyToken()">📋 Copiar mi token</button>
+      <div id="tokenDisplay" style="display:none;margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--muted);word-break:break-all;background:var(--surface2);padding:10px;border-radius:8px"></div>
+    </div>
+  </div>
   </div>
 </div>
 
@@ -315,6 +324,8 @@ function initGoogle() {
       document.getElementById('authBanner').style.display = 'none';
       document.getElementById('appContent').style.display = 'block';
       document.getElementById('authStatus').textContent = 'Sincronizado con Google Sheets';
+      // Store token for display
+      localStorage.setItem('gtoken', resp.access_token);
       await ensureHeaders();
       await loadTasks();
       checkDailyReminder();
@@ -538,6 +549,17 @@ async function addTask() {
   document.getElementById('taskName').value = '';
   document.getElementById('taskDesc').value = '';
   document.getElementById('taskDate').value = new Date().toISOString().split('T')[0];
+
+function copyToken() {
+  const token = localStorage.getItem('gtoken');
+  if (!token) { showToast('Primero iniciá sesión con Google', 'error'); return; }
+  navigator.clipboard.writeText(token).then(() => {
+    showToast('Token copiado ✓', 'success');
+    const d = document.getElementById('tokenDisplay');
+    d.style.display = 'block';
+    d.textContent = token.slice(0,40) + '...' ;
+  });
+}
   document.getElementById('taskTime').value = '09:00';
   selectRec('ninguna', document.querySelector('.rec-btn'));
   switchTab('lista');
@@ -825,6 +847,17 @@ function showToast(msg, type='') {
 
 // ── INIT ─────────────────────────────────────────────────
 document.getElementById('taskDate').value = new Date().toISOString().split('T')[0];
+
+function copyToken() {
+  const token = localStorage.getItem('gtoken');
+  if (!token) { showToast('Primero iniciá sesión con Google', 'error'); return; }
+  navigator.clipboard.writeText(token).then(() => {
+    showToast('Token copiado ✓', 'success');
+    const d = document.getElementById('tokenDisplay');
+    d.style.display = 'block';
+    d.textContent = token.slice(0,40) + '...' ;
+  });
+}
 loadGoogleScript();
 </script>
 </body>
